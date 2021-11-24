@@ -133,10 +133,3 @@ class CloseApproach:
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, " \
                f"velocity={self.velocity:.2f}, neo={self.neo!r})"
-
-
-from models import NearEarthObject
-neo = NearEarthObject({'pdes':'2020 FK', 'name':'One REALLY BIG fake asteroid', 'diameter': '12.345', 'pha': 'True'})
-
-test_neo_dict = {'pdes':'2020 FK', 'name':'One REALLY BIG fake asteroid', 'diameter': '12.345', 'pha': 'True'}
-neo2 = NearEarthObject(test_neo_dict)
