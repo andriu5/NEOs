@@ -5,6 +5,8 @@ task1.py
 __pycache__/
 *.py[cod]
 *$py.class
+tests/__pycache__/
+tests/__pycache__/*.py[cod]
 
 # C extensions
 *.so
