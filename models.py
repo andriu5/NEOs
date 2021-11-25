@@ -110,8 +110,16 @@ class CloseApproach:
 
     def __str__(self):
         """Return `str(self)`."""
-        return f"On {self.time_str}, '{self.neo.fullname}' approaches Earth at a distance of {self.distance:.2f} au and" \
-            f"a velocity of {self.velocity:.2f} km/s."
+        salida = f"On {self.time_str}, '{self.neo.fullname}' approaches Earth at"
+        if not math.isnan(self.distance):
+            salida += f" a distance of {self.distance:.2f} au and"
+        else:
+            salida += f" an unknown distance and"
+        if not math.isnan(self.velocity):
+            salida += f" a velocity of {self.velocity:.2f} km/s."
+        else:
+            salida += f" an unknown velocity."
+        return salida
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
