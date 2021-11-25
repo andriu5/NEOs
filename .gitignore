@@ -2,11 +2,12 @@
 task1.py
 
 # Byte-compiled / optimized / DLL files
+
 __pycache__/
 *.py[cod]
 *$py.class
-tests/__pycache__/
 tests/__pycache__/*.py[cod]
+tests/__pycache__/*.pyc
 
 # C extensions
 *.so
