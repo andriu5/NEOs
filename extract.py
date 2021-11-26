@@ -14,6 +14,7 @@ You'll edit this file in Task 2.
 """
 import csv
 import json
+import traceback
 
 from models import NearEarthObject, CloseApproach
 
@@ -24,8 +25,22 @@ def load_neos(neo_csv_path):
     :param neo_csv_path: A path to a CSV file containing data about near-Earth objects.
     :return: A collection of `NearEarthObject`s.
     """
-    # TODO: Load NEO data from the given CSV file.
-    return ()
+    with open(neo_csv_path, 'r') as infile:
+        neos = []
+        reader = csv.DictReader(infile)
+        for elem in reader:
+            try:
+                neo = NearEarthObject(
+                    designation=elem["pdes"] if elem["pdes"] else '', 
+                    name=elem["name"] if elem["name"] else None, 
+                    hazardous=True if elem["pha"]=='Y' else False,
+                    diameter=float(elem["diameter"] if elem["diameter"] else 'nan')
+                )
+            except Exception as e:
+                print("load_neos: ",e,"Traceback: ",traceback.format_exc())
+            else:
+                neos.append(neo)
+    return neos
 
 
 def load_approaches(cad_json_path):
@@ -34,5 +49,24 @@ def load_approaches(cad_json_path):
     :param cad_json_path: A path to a JSON file containing data about close approaches.
     :return: A collection of `CloseApproach`es.
     """
-    # TODO: Load close approach data from the given JSON file.
-    return ()
+    with open(cad_json_path, 'r') as infile:
+        contents = json.load(infile)  # Parse JSON data into a Python object.
+        reader = [dict(zip(contents["fields"], data)) for data in contents["data"]]
+        close_approaches = []
+        for elem in reader:
+            try:
+                ca = CloseApproach(
+                    designation=elem["des"],
+                    time=elem["cd"],
+                    distance=float(elem["dist"]),
+                    velocity=float(elem["v_rel"]),
+                )
+            except Exception as e:
+                print("load_approaches: ",e,"Traceback: ",traceback.format_exc())
+            else:
+                close_approaches.append(ca)    
+    return close_approaches
+
+
+
+
