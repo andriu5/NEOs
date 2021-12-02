@@ -53,7 +53,7 @@ def load_approaches(cad_json_path: str) -> List[CloseApproach]:
     with open(cad_json_path, 'r') as infile:
         contents = json.load(infile)  # Parse JSON data into a Python object.
         reader = [dict(zip(contents["fields"], data)) for data in contents["data"]]
-        close_approaches = []
+        approaches = []
         for elem in reader:
             try:
                 ca = CloseApproach(
@@ -65,8 +65,8 @@ def load_approaches(cad_json_path: str) -> List[CloseApproach]:
             except Exception as e:
                 print("load_approaches: ",e,"Traceback: ",traceback.format_exc())
             else:
-                close_approaches.append(ca)    
-    return close_approaches
+                approaches.append(ca)    
+    return approaches
 
 
 
