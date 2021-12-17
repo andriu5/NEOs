@@ -1,5 +1,5 @@
-"""Provide filters for querying close approaches and limit the generated results.
-
+"""Provide filters for querying close approaches and limit the generated
+results.
 The `create_filters` function produces a collection of objects that is used by
 the `query` method to generate a stream of `CloseApproach` objects that match
 all of the desired criteria. The arguments to `create_filters` are provided by
@@ -8,9 +8,8 @@ the main module and originate from the user's command-line options.
 This function can be thought to return a collection of instances of subclasses
 of `AttributeFilter` - a 1-argument callable (on a `CloseApproach`) constructed
 from a comparator (from the `operator` module), a reference value, and a class
-method `get` that subclasses can override to fetch an attribute of interest from
-the supplied `CloseApproach`.
-
+method `get` that subclasses can override to fetch an attribute of interest
+from the supplied `CloseApproach`.
 The `limit` function simply limits the maximum number of values produced by an
 iterator.
 
@@ -27,10 +26,9 @@ class AttributeFilter:
     """A general superclass for filters on comparable attributes.
 
     An `AttributeFilter` represents the search criteria pattern comparing some
-    attribute of a close approach (or its attached NEO) to a reference value. It
-    essentially functions as a callable predicate for whether a `CloseApproach`
-    object satisfies the encoded criterion.
-
+    attribute of a close approach (or its attached NEO) to a reference value.
+    It essentially functions as a callable predicate for whether a
+    `CloseApproach` object satisfies the encoded criterion.
     It is constructed with a comparator operator and a reference value, and
     calling the filter (with __call__) executes `get(approach) OP value` (in
     infix notation).
@@ -39,8 +37,8 @@ class AttributeFilter:
     behavior to fetch a desired attribute from the given `CloseApproach`.
     """
     def __init__(self, op, value):
-        """Construct a new `AttributeFilter` from an binary predicate and a reference value.
-
+        """Construct a new `AttributeFilter` from an binary predicate
+        and a reference value.
         The reference value will be supplied as the second (right-hand side)
         argument to the operator function. For example, an `AttributeFilter`
         with `op=operator.le` and `value=10` will, when called on an approach,
@@ -64,12 +62,100 @@ class AttributeFilter:
         interest from the supplied `CloseApproach`.
 
         :param approach: A `CloseApproach` on which to evaluate this filter.
-        :return: The value of an attribute of interest, comparable to `self.value` via `self.op`.
+        :return: The value of an attribute of interest, comparable to
+                 `self.value` via `self.op`.
         """
         raise UnsupportedCriterionError
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
+        return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, " \
+            f"value={self.value})"
+
+
+class DateFilter(AttributeFilter):
+    """Get approach objects by date."""
+
+    @classmethod
+    def get(cls, approach):
+        """Return approach.time converted to datetime.datetime object for the
+        date filter.
+
+        Args:
+            approach (`CloseApproach`): A `CloseApproach` object
+
+        Returns:
+            [datetime.datetime]: Converted date to datetime object of a
+                                 `CloseApproach`.
+        """
+        return approach.time.date()
+
+
+class DistanceFilter(AttributeFilter):
+    """Get approach objects by distance."""
+
+    @classmethod
+    def get(cls, approach):
+        """Return approach.distance of the `CloseApproach` object for the
+        distance filter.
+
+        Args:
+            approach (`CloseApproach`): A `CloseApproach` object
+
+        Returns:
+            [float]: the distance attribute of a `CloseApproach`.
+        """
+        return approach.distance
+
+
+class VelocityFilter(AttributeFilter):
+    """Get approach objects by velocity."""
+
+    @classmethod
+    def get(cls, approach):
+        """Return approach.velocity of the `CloseApproach` object for the
+        velocity filter.
+
+        Args:
+            approach (`CloseApproach`): A `CloseApproach` object
+
+        Returns:
+            [float]: the velocity attribute of a `CloseApproach`.
+        """
+        return approach.velocity
+
+
+class DiameterFilter(AttributeFilter):
+    """"Get approach objects by diameter."""
+
+    @classmethod
+    def get(cls, approach):
+        """Return approach.neo.diameter of the `CloseApproach` object for the
+        diameter filter.
+
+        Args:
+            approach (`CloseApproach`): A `CloseApproach` object
+
+        Returns:
+            [float]: the diameter attribute of a `NearEarthObject` object.
+        """
+        return approach.neo.diameter
+
+
+class HazardousFilter(AttributeFilter):
+    """"Get approach objects by hazardous."""
+
+    @classmethod
+    def get(cls, approach):
+        """Return approach.neo.hazardous of the `CloseApproach` object for the
+        hazardous filter.
+
+        Args:
+            approach (`CloseApproach`): A `CloseApproach` object
+
+        Returns:
+            [bool]: the hazardous attribute of a `NearEarthObject` object.
+        """
+        return approach.neo.hazardous
 
 
 def create_filters(
@@ -109,7 +195,30 @@ def create_filters(
     :return: A collection of filters for use with `query`.
     """
     # TODO: Decide how you will represent your filters.
-    return ()
+    filters = []
+    if date:
+        filters.append(DateFilter(operator.eq, date))
+    if start_date:
+        filters.append(DateFilter(operator.ge, start_date))
+    if end_date:
+        filters.append(DateFilter(operator.le, end_date))
+    if distance_min:
+        filters.append(DateFilter(operator.ge, distance_min))
+    if distance_max:
+        filters.append(DateFilter(operator.le, distance_max))
+    if velocity_min:
+        filters.append(DateFilter(operator.ge, velocity_min))
+    if velocity_max:
+        filters.append(DateFilter(operator.le, velocity_max))
+    if diameter_min:
+        filters.append(DateFilter(operator.ge, diameter_min))
+    if diameter_max:
+        filters.append(DateFilter(operator.le, diameter_max))
+    # The value of the hazardous argument will be False, not to be confused
+    # with None.
+    if hazardous is not None:
+        filters.append(DateFilter(operator.eq, hazardous))
+    return filters
 
 
 def limit(iterator, n=None):
