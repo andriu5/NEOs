@@ -94,6 +94,16 @@ class CloseApproach:
         self.neo = info.get("neo", None)
 
     @property
+    def designation(self):
+        """Getter designation
+
+        Returns:
+            `str(self._designation)`: returns self._designation 
+                                      to get approaches.designation
+        """
+        return self._designation
+
+    @property
     def time_str(self):
         """Return a formatted representation of this `CloseApproach`'s approach time.
 
