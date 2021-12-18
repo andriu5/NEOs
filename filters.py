@@ -203,21 +203,21 @@ def create_filters(
     if end_date:
         filters.append(DateFilter(operator.le, end_date))
     if distance_min:
-        filters.append(DateFilter(operator.ge, distance_min))
+        filters.append(DistanceFilter(operator.ge, distance_min))
     if distance_max:
-        filters.append(DateFilter(operator.le, distance_max))
+        filters.append(DistanceFilter(operator.le, distance_max))
     if velocity_min:
-        filters.append(DateFilter(operator.ge, velocity_min))
+        filters.append(VelocityFilter(operator.ge, velocity_min))
     if velocity_max:
-        filters.append(DateFilter(operator.le, velocity_max))
+        filters.append(VelocityFilter(operator.le, velocity_max))
     if diameter_min:
-        filters.append(DateFilter(operator.ge, diameter_min))
+        filters.append(DiameterFilter(operator.ge, diameter_min))
     if diameter_max:
-        filters.append(DateFilter(operator.le, diameter_max))
+        filters.append(DiameterFilter(operator.le, diameter_max))
     # The value of the hazardous argument will be False, not to be confused
     # with None.
     if hazardous is not None:
-        filters.append(DateFilter(operator.eq, hazardous))
+        filters.append(HazardousFilter(operator.eq, hazardous))
     return filters
 
 
