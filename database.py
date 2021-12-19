@@ -70,7 +70,7 @@ class NEODatabase:
         match is found.
 
         :param designation: The primary designation of the NEO to search for.
-        :return: The `NearEarthObject` with the desired primary designation, 
+        :return: The `NearEarthObject` with the desired primary designation,
                  or `None`.
         """
         return self._des_to_neo.get(designation, None)
