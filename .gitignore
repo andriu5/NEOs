@@ -4,6 +4,14 @@ task2.ipynb
 task3.ipynb
 task4.ipynb
 
+# Reports with the results:
+results.csv
+results.json
+
+# VSCode Debugger settings:
+.vscode
+.vscode/launch.json
+
 # Byte-compiled / optimized / DLL files
 
 __pycache__/
