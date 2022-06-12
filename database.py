@@ -127,8 +127,6 @@ class NEODatabase:
                 # returns True.
                 if all(filter(approach) for filter in filters):
                     yield approach
-                # if all(map(lambda x: x(approach), filters)):
-                #     yield approach
         else:
             # return all the close approaches (if no arguments are provided)
             for approach in self._approaches:
