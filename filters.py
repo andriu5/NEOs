@@ -16,7 +16,6 @@ iterator.
 You'll edit this file in Tasks 3a and 3c.
 """
 import operator
-# import itertools
 
 
 class UnsupportedCriterionError(NotImplementedError):
@@ -164,8 +163,7 @@ def create_filters(
         distance_min=None, distance_max=None,
         velocity_min=None, velocity_max=None,
         diameter_min=None, diameter_max=None,
-        hazardous=None
-):
+        hazardous=None):
     """Create a collection of filters from user-specified criteria.
 
     Each of these arguments is provided by the main module with a value from
@@ -206,26 +204,24 @@ def create_filters(
     :return: A collection of filters for use with `query`.
     """
     filters = []
-    if date:
+    if date is not None:
         filters.append(DateFilter(operator.eq, date))
-    if start_date:
+    if start_date is not None:
         filters.append(DateFilter(operator.ge, start_date))
-    if end_date:
+    if end_date is not None:
         filters.append(DateFilter(operator.le, end_date))
-    if distance_min:
+    if distance_min is not None:
         filters.append(DistanceFilter(operator.ge, distance_min))
-    if distance_max:
+    if distance_max is not None:
         filters.append(DistanceFilter(operator.le, distance_max))
-    if velocity_min:
+    if velocity_min is not None:
         filters.append(VelocityFilter(operator.ge, velocity_min))
-    if velocity_max:
+    if velocity_max is not None:
         filters.append(VelocityFilter(operator.le, velocity_max))
-    if diameter_min:
+    if diameter_min is not None:
         filters.append(DiameterFilter(operator.ge, diameter_min))
-    if diameter_max:
+    if diameter_max is not None:
         filters.append(DiameterFilter(operator.le, diameter_max))
-    # The value of the hazardous argument will be False, not to be confused
-    # with None.
     if hazardous is not None:
         filters.append(HazardousFilter(operator.eq, hazardous))
     return filters
@@ -240,8 +236,12 @@ def limit(iterator, n=None):
     :param n: The maximum number of values to produce.
     :yield: The first (at most) `n` values from the iterator.
     """
-    # Produce at most `n` values from the given iterator.
-    if n == 0 or n is None:
-        return iterator
-    # This option is valid, too: return list(itertools.islice(iterator, 0, n))
-    return (value for index, value in enumerate(iterator) if index < n)
+    if n is None or n == 0:
+        for value in iterator:
+            yield value
+    else:
+        for value in iterator:
+            yield value
+            n -= 1
+            if n == 0:
+                break  # Stop iterating.

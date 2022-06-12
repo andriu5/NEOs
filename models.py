@@ -40,9 +40,17 @@ class NearEarthObject:
                      constructor.
         """
         self.designation = info.get("designation", '')  # pdes
-        self.name = info.get("name", None)  # name
-        self.diameter = info.get("diameter", float('nan'))  # diameter
-        self.hazardous = info.get("hazardous", False)  # pha
+        self.name = info.get("name") if info.get("name") else None # name
+        if info.get("diameter"):
+            self.diameter = float(info.get("diameter")) # diameter
+        else:
+            self.diameter = float('nan')
+        if info.get("hazardous") == 'Y': # pha
+            self.hazardous = True
+        elif info.get("hazardous") == 'N':
+            self.hazardous = False
+        else:
+            self.hazardous = False
 
         # Initial collection of linked approaches.
         self.approaches = []
@@ -110,8 +118,8 @@ class CloseApproach:
         self.time = info.get("time", None)  # cd
         if self.time:
             self.time = cd_to_datetime(self.time)  # datetime obj
-        self.distance = info.get("distance", float('nan'))  # dist
-        self.velocity = info.get("velocity", float('nan'))  # v_rel
+        self.distance = float(info.get("distance", float('nan')))  # dist
+        self.velocity = float(info.get("velocity", float('nan')))  # v_rel
 
         # Create an attribute for the referenced NEO, originally None.
         self.neo = info.get("neo", None)

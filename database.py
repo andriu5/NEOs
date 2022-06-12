@@ -43,21 +43,31 @@ class NEODatabase:
         """
         self._neos = neos
         self._approaches = approaches
+        self.name_to_neo = {}
+        self._pdes_to_neo = {}
 
-        # pdes: primary designations
-        self._pdes_indexed = {neo.designation:
-                              index for index, neo in enumerate(self._neos)}
+        # Interconnect the NearEarthObjects and CloseApproaches by reference, 
+        # and provide the ability to fetch NEOs by designation or by name.
+        for neo in self._neos:
+            try:
+                neo.approaches = []
+                self.name_to_neo[neo.name] = neo
+                self._pdes_to_neo[neo.designation] = neo
+            except AttributeError:
+                # This should never happen, but if it does,
+                # we'll just ignore it.
+                pass
 
         for approach in self._approaches:
-            if approach.designation in self._pdes_indexed.keys():
-                approach.neo = self._neos[
-                    self._pdes_indexed[approach.designation]]
-                self._neos[
-                            self._pdes_indexed[approach.designation]
-                          ].approaches.append(approach)
-
-        self._des_to_neo = {neo.designation: neo for neo in self._neos}
-        self.name_to_neo = {neo.name: neo for neo in self._neos}
+            try:
+                neo = self._pdes_to_neo[approach._designation]
+            except KeyError:
+                # This should never happen, but if it does,
+                # we'll just ignore it.
+                continue
+            else:
+                neo.approaches.append(approach)
+                approach.neo = neo
 
     def get_neo_by_designation(self, designation):
         """Find and return an NEO by its primary designation.
@@ -73,7 +83,7 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation,
                  or `None`.
         """
-        return self._des_to_neo.get(designation, None)
+        return self._pdes_to_neo.get(designation, None)
 
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
@@ -115,8 +125,10 @@ class NEODatabase:
                 # are true, otherwise it returns False.
                 # If the iterable object is empty, the all() function also
                 # returns True.
-                if all(map(lambda x: x(approach), filters)):
+                if all(filter(approach) for filter in filters):
                     yield approach
+                # if all(map(lambda x: x(approach), filters)):
+                #     yield approach
         else:
             # return all the close approaches (if no arguments are provided)
             for approach in self._approaches:

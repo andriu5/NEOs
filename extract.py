@@ -34,11 +34,10 @@ def load_neos(neo_csv_path: str) -> List[NearEarthObject]:
         for elem in reader:
             try:
                 neo = NearEarthObject(
-                    designation=elem["pdes"] if elem["pdes"] else '',
-                    name=elem["name"] if elem["name"] else None,
-                    hazardous=True if elem["pha"] == 'Y' else False,
-                    diameter=float(elem["diameter"]
-                                   if elem["diameter"] else 'nan')
+                    designation = elem["pdes"],
+                    name = elem["name"],
+                    hazardous = elem["pha"],
+                    diameter = elem["diameter"]
                 )
             except Exception as e:
                 print("load_neos: ", e, "Traceback: ", traceback.format_exc())
@@ -55,21 +54,21 @@ def load_approaches(cad_json_path: str) -> List[CloseApproach]:
     :return: A collection of `CloseApproach`es.
     """
     with open(cad_json_path, 'r') as infile:
-        contents = json.load(infile)  # Parse JSON data into a Python object.
-        reader = [dict(zip(contents["fields"], data))
-                  for data in contents["data"]]
         approaches = []
-        for elem in reader:
+        contents = json.load(infile)  # Parse JSON data into a Python object.
+        
+        # Create a `CloseApproach` for each row of data.
+        for data in contents["data"]:
             try:
+                cad_row = dict(zip(contents["fields"], data))
                 ca = CloseApproach(
-                    designation=elem["des"],
-                    time=elem["cd"],
-                    distance=float(elem["dist"]),
-                    velocity=float(elem["v_rel"]),
-                )
+                    designation = cad_row["des"],
+                    time = cad_row["cd"],
+                    distance = cad_row["dist"],
+                    velocity = cad_row["v_rel"])
             except Exception as e:
                 print("load_approaches: ", e,
-                      "Traceback: ", traceback.format_exc())
+                "Traceback: ", traceback.format_exc())
             else:
                 approaches.append(ca)
     return approaches
