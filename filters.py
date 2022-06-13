@@ -1,5 +1,6 @@
-"""Provide filters for querying close approaches and limit the generated
+"""Provide filters for querying close approaches and limit the generated \
 results.
+
 The `create_filters` function produces a collection of objects that is used by
 the `query` method to generate a stream of `CloseApproach` objects that match
 all of the desired criteria. The arguments to `create_filters` are provided by
@@ -36,9 +37,11 @@ class AttributeFilter:
     Concrete subclasses can override the `get` classmethod to provide custom
     behavior to fetch a desired attribute from the given `CloseApproach`.
     """
+
     def __init__(self, op, value):
-        """Construct a new `AttributeFilter` from an binary predicate
+        """Construct a new `AttributeFilter` from an binary predicate \
         and a reference value.
+
         The reference value will be supplied as the second (right-hand side)
         argument to the operator function. For example, an `AttributeFilter`
         with `op=operator.le` and `value=10` will, when called on an approach,
@@ -68,6 +71,7 @@ class AttributeFilter:
         raise UnsupportedCriterionError
 
     def __repr__(self):
+        """Return a string representation of this filter."""
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, " \
             f"value={self.value})"
 
@@ -77,8 +81,8 @@ class DateFilter(AttributeFilter):
 
     @classmethod
     def get(cls, approach):
-        """Return approach.time converted to datetime.datetime object for the
-        date filter.
+        """Return approach.time converted to datetime.datetime object for the \
+            date filter.
 
         Args:
             approach (`CloseApproach`): A `CloseApproach` object
@@ -95,8 +99,8 @@ class DistanceFilter(AttributeFilter):
 
     @classmethod
     def get(cls, approach):
-        """Return approach.distance of the `CloseApproach` object for the
-        distance filter.
+        """Return approach.distance of the `CloseApproach` object for the \
+            distance filter.
 
         Args:
             approach (`CloseApproach`): A `CloseApproach` object
@@ -112,8 +116,8 @@ class VelocityFilter(AttributeFilter):
 
     @classmethod
     def get(cls, approach):
-        """Return approach.velocity of the `CloseApproach` object for the
-        velocity filter.
+        """Return approach.velocity of the `CloseApproach` object for the \
+            velocity filter.
 
         Args:
             approach (`CloseApproach`): A `CloseApproach` object
@@ -125,12 +129,12 @@ class VelocityFilter(AttributeFilter):
 
 
 class DiameterFilter(AttributeFilter):
-    """"Get approach objects by diameter."""
+    """Get approach objects by diameter."""
 
     @classmethod
     def get(cls, approach):
-        """Return approach.neo.diameter of the `CloseApproach` object for the
-        diameter filter.
+        """Return approach.neo.diameter of the `CloseApproach` object for the \
+            diameter filter.
 
         Args:
             approach (`CloseApproach`): A `CloseApproach` object
@@ -142,12 +146,12 @@ class DiameterFilter(AttributeFilter):
 
 
 class HazardousFilter(AttributeFilter):
-    """"Get approach objects by hazardous."""
+    """Get approach objects by hazardous."""
 
     @classmethod
     def get(cls, approach):
-        """Return approach.neo.hazardous of the `CloseApproach` object for the
-        hazardous filter.
+        """Return approach.neo.hazardous of the `CloseApproach` object for \
+            the hazardous filter.
 
         Args:
             approach (`CloseApproach`): A `CloseApproach` object
@@ -244,4 +248,4 @@ def limit(iterator, n=None):
             yield value
             n -= 1
             if n == 0:
-                break  # Stop iterating.
+                break

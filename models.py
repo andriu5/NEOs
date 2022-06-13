@@ -33,6 +33,7 @@ class NearEarthObject:
     initialized to an empty collection, but eventually populated in the
     `NEODatabase` constructor.
     """
+
     def __init__(self, **info):
         """Create a new `NearEarthObject`.
 
@@ -77,8 +78,8 @@ class NearEarthObject:
                    " potentially hazardous."
 
     def __repr__(self):
-        """Return `repr(self)`, a computer-readable string representation of
-           this object."""
+        """Return `repr(self)`, a computer-readable string representation of \
+            this object."""
         return f"NearEarthObject(designation={self.designation!r}, " \
                f"name={self.name!r}, " \
                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
@@ -108,6 +109,7 @@ class CloseApproach:
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
+
     def __init__(self, **info):
         """Create a new `CloseApproach`.
 
@@ -126,7 +128,7 @@ class CloseApproach:
 
     @property
     def designation(self):
-        """Getter designation
+        """Getter designation.
 
         Returns:
             `str(self._designation)`: returns self._designation
@@ -136,8 +138,8 @@ class CloseApproach:
 
     @property
     def time_str(self):
-        """Return a formatted representation of this `CloseApproach`'s approach
-        time.
+        """Return a formatted representation of this `CloseApproach`'s \
+            approach time.
 
         The value in `self.time` should be a Python `datetime` object. While a
         `datetime` object has a string representation, the default
@@ -165,8 +167,8 @@ class CloseApproach:
         return salida
 
     def __repr__(self):
-        """Return `repr(self)`, a computer-readable string representation of
-        this object."""
+        """Return `repr(self)`, a computer-readable string representation of \
+            this object."""
         return f"CloseApproach(time={self.time_str!r}, " \
                f"distance={self.distance:.2f}, " \
                f"velocity={self.velocity:.2f}, neo={self.neo!r})"
